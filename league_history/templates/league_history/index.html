@@ -1,0 +1,10 @@
+{% extends "league_history/layout.html" %}
+
+{% block body %}         
+    <h1>Enter Sleeper Username</h1>
+    <form action="{% url 'league_history:history' %}" method="post">
+        {% csrf_token %}
+        {{userForm}}
+        <input type="submit">
+    </form>        
+{% endblock %} 
