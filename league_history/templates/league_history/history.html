@@ -3,7 +3,12 @@
 {% block body %}         
     <h1>{{username}} League History</h1>
     {% for league in leagues %}
-        <h2>{{league}}</h2>
+        <div>
+            <h2>{{league.name}}</h2>
+            {% if league.avatar is not None %}
+                <img src="https://sleepercdn.com/avatars/thumbs/{{league.avatar}}" alt="{{league.name}}_logo">
+            {% endif %}
+        </div>        
         <li>future</li><li>stuff</li><li>here</li>
     {% endfor %}
 {% endblock %} 

@@ -75,9 +75,16 @@ def get_user_leagues(user_id):
     response = requests.get(baseURL+f"/user/{user_id}/leagues/nfl/{current_year}").json()
 
     # loop through and get each league name
-    league_names = []
+    leagues = []
     for league in response:
         # maybe make this a class? league.Name, league.Id, etc.
-        league_names.append(league["name"])
+        leagues.append(SleeperLeague(league["name"], league["league_id"], league["avatar"]))
 
-    return league_names
+    return leagues
+
+class SleeperLeague:
+    def __init__(self, name, id, avatar):
+        self.name = name
+        self.id = id
+        self.avatar = avatar
+
