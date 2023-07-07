@@ -9,7 +9,7 @@ import requests
 baseURL = "https://api.sleeper.app/v1"
 
 class UsernameForm(forms.Form):
-    userForm = forms.CharField(label="", initial="Username", )
+    userForm = forms.CharField(label="", )
 
 def index(request):
     return render(request, "league_history/index.html", {
@@ -43,7 +43,8 @@ def history(request):
 
             return render(request, "league_history/history.html", {
                 "username": username,
-                "leagues": user_leagues
+                "leagues": user_leagues,
+                "league_count": len(user_leagues)
             })
 
         else:
