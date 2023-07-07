@@ -2,6 +2,8 @@
 
 {% block body %}         
     <h1>{{username}} League History</h1>
-    <h2>League 1</h2>       
-    <h2>League 2</h2>
+    {% for league in leagues %}
+        <h2>{{league}}</h2>
+        <li>future</li><li>stuff</li><li>here</li>
+    {% endfor %}
 {% endblock %} 

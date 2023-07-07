@@ -1,6 +1,9 @@
 {% extends "league_history/layout.html" %}
 
 {% block body %}         
+    {% if banner %}
+        <h3>{{banner}}</h3>
+    {% endif %}
     <h1>Enter Sleeper Username</h1>
     <form action="{% url 'league_history:history' %}" method="post">
         {% csrf_token %}
