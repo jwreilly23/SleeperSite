@@ -41,6 +41,12 @@ def history(request):
             # get user leagues
             user_leagues = get_user_leagues(user_id)
 
+
+            # get the 1st, 2nd, 3rd place finish
+
+
+
+            # render the successful page
             return render(request, "league_history/history.html", {
                 "username": username,
                 "leagues": user_leagues,
@@ -72,7 +78,7 @@ def get_user_leagues(user_id):
     '''
     Takes a user id, returns the list of league names
     '''
-    current_year = 2023 # probably update this in the future...
+    current_year = 2022 # probably update this in the future...
     response = requests.get(baseURL+f"/user/{user_id}/leagues/nfl/{current_year}").json()
 
     # loop through and get each league name
@@ -82,6 +88,30 @@ def get_user_leagues(user_id):
         leagues.append(SleeperLeague(league["name"], league["league_id"], league["avatar"]))
 
     return leagues
+
+def get_winner_bracket(league_id):
+    '''
+    Takes a league id, returns a list of [1st, 2nd, 3rd...etc] for top 5 finish
+    '''
+    response = requests.get(baseURL+f"/league/{league_id}/winners_bracket").json()
+
+    # currently only returning top 6
+    final_standings = [None] * 3
+
+    # loop through twice to find the highest round number...accounts for playoffs with any number of rounds
+    final_round = 1
+    for matchup in response:
+        if matchup["r"] > final_round:
+            final_round = matchup["r"]
+
+    for matchup in response:
+        # check if final round
+        if matchup["r"] == final_round:
+            # 1st and 2nd
+            if matchup["p"] == 1:
+
+
+
 
 class SleeperLeague:
     def __init__(self, name, id, avatar):
