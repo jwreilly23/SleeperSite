@@ -8,7 +8,15 @@
             {% if league.avatar is not None %}
                 <img src="https://sleepercdn.com/avatars/thumbs/{{league.avatar}}" alt="{{league.name}}_logo">
             {% endif %}
-        </div>        
-        <li>future</li><li>stuff</li><li>here</li>
+        </div>
+        <ol>
+            {% for place in league.standings %}
+                {% if place == username %}       
+                    <li><b>{{place}}</b></li>
+                {% else %}
+                    <li>{{place}}</li>
+                {% endif %}
+            {% endfor %}
+        </ol>
     {% endfor %}
 {% endblock %} 
