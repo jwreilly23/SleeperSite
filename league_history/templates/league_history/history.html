@@ -1,7 +1,7 @@
 {% extends "league_history/layout.html" %}
 
 {% block body %}         
-    <h1>{{username}} Leagues ({{league_count}} Active)</h1>
+    <h1>{{username}} Leagues ({{league_count}} Active) - {{call_count}} API Calls</h1>
     {% for league in leagues %}
         <div>
             <h2>{{league.name}}</h2>

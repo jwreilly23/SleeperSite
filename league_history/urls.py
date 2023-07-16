@@ -4,5 +4,6 @@ from . import views
 app_name = "league_history"
 urlpatterns = [
     path("", views.index, name="index"),
-    path("history", views.history, name="history")
+    path("history", views.history, name="history"),
+    path("SelectLeagues", views.select_leagues, name="SelectLeagues")
 ]

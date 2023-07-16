@@ -1,0 +1,16 @@
+{% extends "league_history/layout.html" %}
+
+{% block body %}         
+    <h1>{{username}}: Select up to 10 Leagues ({{league_count}} Active) - {{call_count}} API Calls</h1>
+    <form action="{% url 'league_history:history' %}" method="post">
+    {% for league in leagues %}
+        <input type="checkbox" id="{{league.id}}" name="{{league.name}}" value="{{league.name}}" checked>
+        <label for="{{league.name}}">{{league.name}}</label>
+        {% if league.avatar is not None %}
+            <img src="https://sleepercdn.com/avatars/thumbs/{{league.avatar}}" alt="{{league.name}}_logo">
+        {% endif %}
+        <br>
+    {% endfor %}
+    <input type="submit">  
+    </form>
+{% endblock %} 

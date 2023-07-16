@@ -6,15 +6,51 @@ import requests
 
 # Create your views here.
 
-baseURL = "https://api.sleeper.app/v1"
+base_url = "https://api.sleeper.app/v1"
+call_count = 0
 
 class UsernameForm(forms.Form):
     userForm = forms.CharField(label="", )
+
+# class LeaguesForm(forms.Form):
+#     leaguesForm = forms.CheckboxSelectMultiple(choices=)
 
 def index(request):
     return render(request, "league_history/index.html", {
         "userForm": UsernameForm()
     })
+
+def select_leagues(request):
+    if request.method == "POST":
+        # Take in the data the user submitted and save it as form
+        form = UsernameForm(request.POST)
+
+        # Check if form data is valid (server-side)
+        if form.is_valid():
+            # get form info
+            username = form.cleaned_data["userForm"]
+
+            # get user id by username
+            user_id = get_user_id(username)
+
+            # reload with banner if username not found
+            if not user_id:
+                return render(request, "league_history/index.html", {
+                "userForm": UsernameForm(),
+                "banner": f"Username {username} not found"
+            })
+
+            # get user leagues
+            user_leagues = get_user_leagues(user_id)
+
+            # render the successful page
+            return render(request, "league_history/selectleagues.html", {
+                "username": username,
+                "leagues": user_leagues,
+                "league_count": len(user_leagues),
+                "call_count": call_count
+            })
+
 
 def history(request):
     if request.method == "POST":
@@ -41,16 +77,12 @@ def history(request):
             # get user leagues
             user_leagues = get_user_leagues(user_id)
 
-
-            # get the 1st, 2nd, 3rd place finish
-
-
-
             # render the successful page
             return render(request, "league_history/history.html", {
                 "username": username,
                 "leagues": user_leagues,
-                "league_count": len(user_leagues)
+                "league_count": len(user_leagues),
+                "call_count": call_count
             })
 
         else:
@@ -68,7 +100,7 @@ def get_user_id(username):
     '''
     Takes a username, returns the user id
     '''
-    response = requests.get(baseURL+f"/user/{username}").json()
+    response = requests.get(base_url+f"/user/{username}").json()
     if response is not None:
         return response["user_id"]
     else:
@@ -78,7 +110,10 @@ def get_username(user_id):
     '''
     Takes a username, returns the user id
     '''
-    response = requests.get(baseURL+f"/user/{user_id}").json()
+    response = requests.get(base_url+f"/user/{user_id}").json()
+    global call_count
+    call_count += 1
+
     if response is not None:
         return response["username"]
     else:
@@ -89,7 +124,9 @@ def get_user_leagues(user_id):
     Takes a user id, returns the list of league names
     '''
     current_year = 2022 # probably update this in the future...
-    response = requests.get(baseURL+f"/user/{user_id}/leagues/nfl/{current_year}").json()
+    response = requests.get(base_url+f"/user/{user_id}/leagues/nfl/{current_year}").json()
+    global call_count
+    call_count += 1
 
     # loop through and get each league name
     leagues = []
@@ -98,7 +135,7 @@ def get_user_leagues(user_id):
         league = SleeperLeague(league_raw["name"], league_raw["league_id"], league_raw["avatar"], league_raw["total_rosters"])
 
         # get standings
-        league.set_standings(get_winner_bracket(league.id, league.size))
+        # league.set_standings(get_winner_bracket(league.id, league.size))
 
         leagues.append(league)
 
@@ -109,12 +146,15 @@ def get_winner_bracket(league_id, league_size):
     Takes a league id, returns a list of [1st, 2nd, 3rd...etc] for top 5 finish
     '''
     # get the playoff brackets
-    winners_raw = requests.get(baseURL+f"/league/{league_id}/winners_bracket").json()
+    winners_raw = requests.get(base_url+f"/league/{league_id}/winners_bracket").json()
+    global call_count
+    call_count += 1
     # losers_raw = requests.get(baseURL+f"/league/{league_id}/losers_bracket").json()
 
     # get the league rosters, to relate bracket roster id's to usernames
     rosters_dict = {}
-    league_rosters_raw = requests.get(baseURL+f"/league/{league_id}/rosters").json()
+    league_rosters_raw = requests.get(base_url+f"/league/{league_id}/rosters").json()
+    call_count += 1
     for roster in league_rosters_raw:
         owner_username = get_username(roster["owner_id"])
         rosters_dict[roster["roster_id"]] = owner_username

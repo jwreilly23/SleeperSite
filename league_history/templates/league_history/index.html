@@ -5,7 +5,7 @@
         <h3>{{banner}}</h3>
     {% endif %}
     <h1>Enter Sleeper Username</h1>
-    <form action="{% url 'league_history:history' %}" method="post">
+    <form action="{% url 'league_history:SelectLeagues' %}" method="post">
         {% csrf_token %}
         {{userForm}}
         <input type="submit">
